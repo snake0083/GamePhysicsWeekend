@@ -51,6 +51,7 @@ void Scene::Initialize() {
 	body.m_orientation = Quat( 0, 0, 0, 1 );
 	body.m_invMass = 1.0f;
 	body.m_elasticity = 0.5f;
+	body.m_friction = 0.5f;
 	body.m_shape = new ShapeSphere( 1.0f );
 	m_bodies.push_back( body );
 
@@ -58,6 +59,7 @@ void Scene::Initialize() {
 	body.m_orientation = Quat( 0, 0, 0, 1 );
 	body.m_invMass = 0.0f;
 	body.m_elasticity = 1.0f;
+	body.m_friction = 0.5f;
 	body.m_shape = new ShapeSphere( 1000.0f );
 	m_bodies.push_back( body );
 
@@ -96,6 +98,6 @@ void Scene::Update( const float dt_sec ) {
 	}
 
 	for (int i = 0; i < m_bodies.size(); i++) {
-		m_bodies[i].m_position += m_bodies[i].m_linearVelocity * dt_sec;
+		m_bodies[i].Update(dt_sec);
 	}
 }
