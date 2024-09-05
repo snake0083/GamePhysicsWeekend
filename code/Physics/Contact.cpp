@@ -57,8 +57,11 @@ void ResolveContact( contact_t & contact ) {
 
 	// Find the normal direction of the velocity with respect to the normal of the collision
 	const Vec3 velNorm = n * n.Dot(vab);
+
+	// Find the tangent direction of the velocity with respect to the normal of the collision
 	const Vec3 velTang = vab - velNorm;
 
+	// Get the tangential velocities relative to the other body
 	Vec3 relativeVelTang = velTang;
 	relativeVelTang.Normalize();
 
@@ -66,11 +69,14 @@ void ResolveContact( contact_t & contact ) {
 	const Vec3 inertiaB = (invWorldInertiaB*rb.Cross(relativeVelTang)).Cross(rb);
 	const float invInertia = (inertiaA+inertiaB).Dot(relativeVelTang);
 
-	const float reducedMass = 1.0f/(bodyA->m_invMass + bodyB->m_invMass +invInertia);
+	// Calculate the tangential impulse for friction
+	const float reducedMass = 1.0f/(bodyA->m_invMass + bodyB->m_invMass + invInertia);
 	const Vec3 impulseFriction = velTang * reducedMass * friciton;
 
+	// Apply kinetic friction
 	bodyA->ApplyImpulse(ptOnA,impulseFriction*-1.0f);
 	bodyB->ApplyImpulse(ptOnB,impulseFriction*1.0f);
+
 	//
 	// Let's also move our colliding objects to just outside of each other (projection method)
 	//
